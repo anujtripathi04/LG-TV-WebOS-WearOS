@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,17 +7,549 @@
     tools:context=".MainActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
+    <ScrollView
+        android:id="@+id/viewMainScreen"
+        android:layout_width="match_parent"
+        android:layout_marginTop="50sp"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_world" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_power_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_power"
+                    android:tint="@android:color/holo_red_light" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TableLayout
+                    android:layout_width="50sp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_vol_plus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_plus" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="VOL"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_vol_minus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_minus" />
+                    </TableRow>
+                </TableLayout>
+
+                <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_home"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_home" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_settings" />
+                    </TableRow>
+                </TableLayout>
+
+                <TableLayout
+                    android:layout_width="50sp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_ch_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_up" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="CH"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_ch_down"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/app_name"
+                            android:onClick="btnPressed"
+                            android:src="@drawable/ic_down" />
+                    </TableRow>
+                </TableLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:layout_margin="15sp"
+                android:background="@drawable/border_sq"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_mute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_mute" />
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_back" />
+
+                <ImageButton
+                    android:id="@+id/btn_source"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_source" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_nav_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_up" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_nav_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_left" />
+
+                <ImageButton
+                    android:id="@+id/btn_enter"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_circle_filled"
+                    android:tint="@android:color/white" />
+
+                <ImageButton
+                    android:id="@+id/btn_nav_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_right" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_nav_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:src="@drawable/ic_down" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_key1"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_one" />
+
+                <ImageButton
+                    android:id="@+id/btn_key2"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_two" />
+
+                <ImageButton
+                    android:id="@+id/btn_key3"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_three" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_key4"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_four" />
+
+                <ImageButton
+                    android:id="@+id/btn_key5"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_five" />
+
+                <ImageButton
+                    android:id="@+id/btn_key6"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_six" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_key7"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_seven" />
+
+                <ImageButton
+                    android:id="@+id/btn_key8"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_eight" />
+
+                <ImageButton
+                    android:id="@+id/btn_key9"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_nine" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_key0"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_margin="10sp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:backgroundTintMode="@android:color/white"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="btnPressed"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_zero" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@android:color/transparent"
+                android:backgroundTintMode="@android:color/white"
+                android:contentDescription="@string/app_name"
+                android:gravity="center"
+                android:onClick="btnPressed"
+                android:scaleType="fitCenter"
+                android:text="@string/apps" />
+
+            <LinearLayout
+                android:id="@+id/layoutApps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/viewErrorScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:layout_boxedEdges="all">
+        android:contentDescription="@string/app_name"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/text"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/textViewErrorMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginRight="10sp"
+                android:gravity="center"
+                android:text="Error"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/btn_refresh"
+                android:layout_width="55sp"
+                android:layout_height="55sp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/app_name"
+                android:onClick="checkStatus"
+                android:orientation="vertical"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_refresh" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/viewLoadingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:contentDescription="@string/app_name"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/loadingGif"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_loading_anim" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.wear.widget.BoxInsetLayout>
