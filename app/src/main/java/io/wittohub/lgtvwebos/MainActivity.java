@@ -2,11 +2,13 @@ package io.wittohub.lgtvwebos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +37,7 @@ import okhttp3.Request;
 
 public class MainActivity extends Activity {
 
+    private static MainActivity instance;
     private TextView mStatusText;
     private ActivityMainBinding binding;
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;        // imp to be class member or else goes to gc and doesn't work
@@ -62,11 +65,22 @@ public class MainActivity extends Activity {
         sendDataToTV(data);
     };
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        instance = this;
+
+        mViewLoadingScreen = findViewById(R.id.viewLoadingScreen);
+        mViewMainScreen = findViewById(R.id.viewMainScreen);
+        mViewErrorScreen = findViewById(R.id.viewErrorScreen);
+        mTextViewErrorMsg = findViewById(R.id.textViewErrorMsg);
+        mBtn_refresh = findViewById(R.id.btn_refresh);
 
         // Note: do not use sharedPref as class member variable since it won't be available to all instances of MainActivity --> for example in receiveData
         SharedPreferences sharedPref = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
@@ -250,15 +264,38 @@ public class MainActivity extends Activity {
 
     }
 
-    private void displayErrorOnWatch(String message) {
-        mViewLoadingScreen.setVisibility(View.GONE);
-        mViewMainScreen.setVisibility(View.GONE);
-        mTextViewErrorMsg.setText(message);
-        mViewErrorScreen.setBackgroundColor(Color.RED);
-        mViewErrorScreen.setVisibility(View.VISIBLE);
+    public void checkStatus(View view) {
+        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
+        if (Build.VERSION.SDK_INT >= 11) {
+            recreate();
+        } else {
+            Intent intent = getIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
     }
 
-    private void setAppList(JsonArray appList) throws IOException {
+    void displayErrorOnWatch(String message) {
+        try{
+            runOnUiThread(() -> {
+                mViewLoadingScreen.setVisibility(View.GONE);
+                mViewMainScreen.setVisibility(View.GONE);
+                mTextViewErrorMsg.setText(message);
+                mViewErrorScreen.setBackgroundColor(Color.RED);
+                mViewErrorScreen.setVisibility(View.VISIBLE);
+            });
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    void setAppList(JsonArray appList) throws IOException {
         Context parentThis = this;
         mAppList = appList;       // used inside onClick listener of app icon to resolve appID based on index
         new Thread(() -> {
@@ -312,7 +349,5 @@ public class MainActivity extends Activity {
 
             }
         }).start();
-
-
     }
 }
