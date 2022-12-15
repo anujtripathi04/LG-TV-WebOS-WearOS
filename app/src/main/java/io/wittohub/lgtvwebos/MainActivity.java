@@ -1,6 +1,7 @@
 package io.wittohub.lgtvwebos;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,18 +19,24 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.wittohub.lgtvwebos.databinding.ActivityMainBinding;
 import okhttp3.OkHttpClient;
@@ -113,6 +120,7 @@ public class MainActivity extends Activity {
          */
         if (mTV_IP == null) {
             mStatusText.setText("Searching for TV..");
+            mStatusText.setVisibility(View.VISIBLE);
             ScanLocalNetworkDevices scanLocalDevices = new ScanLocalNetworkDevices(getApplicationContext(), this);
             scanLocalDevices.startPingService(getApplicationContext());
         }
@@ -240,28 +248,66 @@ public class MainActivity extends Activity {
         try {
             String cmdType = data.get("cmdType").getAsString();
             String value = data.get("value").getAsString();
-            if (value.equals("CHECK_STATUS")) {
-                String str = mStatusText.getText().toString();
-                //sendDataToWatch(str.getBytes());
-            } else if (value.equals("GET_APPS")) {
-                SharedPreferences sharedPref = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
-                //sendDataToWatch(sharedPref.getString("APP_LIST", null).getBytes());
-            } else if (value.equals("GET_SOURCES")) {
+
+            if (value.equals("GET_SOURCES")) {
                 SharedPreferences sharedPref = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
                 //sendDataToWatch(sharedPref.getString("SRC_LIST", null).getBytes());
-            } else {
-                if (value.equals("TURN_OFF")) {
-                    setTextOnUIThread(mStatusText, "TV is OFF", Color.RED);
+
+                Gson gson = new Gson();
+                JsonElement element = gson.fromJson(sharedPref.getString("SRC_LIST", null), JsonElement.class);
+                JsonArray srcList = element.getAsJsonArray();
+                JsonArray srcListFiltered = new JsonArray();
+                try {
+                    // filter the ones without any icon
+                    for (int i = 0; i < srcList.size(); i++) {
+                        String iconURL = srcList.get(i).getAsJsonObject().get("icon").getAsString();
+                        if (iconURL.length() > 1) {
+                            srcListFiltered.add(srcList.get(i).getAsJsonObject());
+                        }
+                    }
+                    showDialogWithSources(srcListFiltered);
+
+                } catch (Exception e) {
+                    Log.e("EXCEPTION: ", e.getMessage());
                 }
-                mOkHttpWebSocketListener = new OkHttpWebSocketListener(getApplicationContext(), this);
-                mOkHttpWebSocketListener.sendCmdToTV(cmdType, value);
             }
+            else if (value.equals("TURN_OFF")) {
+                setTextOnUIThread(mStatusText, "TV is OFF", Color.RED);
+                mStatusText.setVisibility(View.VISIBLE);
+            }
+            mOkHttpWebSocketListener = new OkHttpWebSocketListener(getApplicationContext(), this);
+            mOkHttpWebSocketListener.sendCmdToTV(cmdType, value);
 
 
         } catch (Exception e) {
             Log.e("EXCEPTION: ", e.getMessage());
         }
 
+    }
+
+    void showDialogWithSources(JsonArray sources) {
+        Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.custom_dialog);
+        ListView lv = dialog.findViewById(R.id.lv);
+        dialog.setCancelable(true);
+        dialog.show();
+
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < sources.size(); i++) {
+            list.add(sources.get(i).getAsJsonObject().get("label").getAsString());
+
+        }
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.textcenter, list);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener((adapter1, v, index, arg3) -> {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
+            JsonObject data = new JsonObject();
+            data.addProperty("cmdType", "SRC");
+            data.addProperty("value", sources.get(index).getAsJsonObject().get("id").getAsString());
+            sendDataToTV(data);
+        });
     }
 
     public void checkStatus(View view) {

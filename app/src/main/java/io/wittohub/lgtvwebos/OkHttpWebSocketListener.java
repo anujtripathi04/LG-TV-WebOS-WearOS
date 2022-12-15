@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,7 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         else {
             mWebSocket = webSocket;
             setTextOnUIThread(mStatusText, "Connecting..", Color.GRAY);
+            mStatusText.setVisibility(View.VISIBLE);
             mCK = mSharedPref.getString("TV_CK_CODE", null);
             String handshake_payload = null;
             // if no CK exists then make fresh handshake
@@ -107,6 +109,7 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
                 sendCmdToTV("BTN", "GET_SOURCES");        // fetches sources and sets in a sharedPref to be returned to watch on its load
             } else if (jsonObj.get("type").getAsString().equals("error")) {
                 setTextOnUIThread(mStatusText, "Please accept as YES on TV to continue", Color.YELLOW);
+                mStatusText.setVisibility(View.VISIBLE);
             }
         }
         // receiving all apps and sending it to watch. This is called and set in advance so that when watch requests it..its ready to be returned
@@ -149,9 +152,11 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         editor.apply();
         if (status) {
             setTextOnUIThread(mStatusText, "Connected", Color.GREEN);
+            mStatusText.setVisibility(View.GONE);
         } else {
-            setTextOnUIThread(mStatusText, "Unable To Connect", Color.RED);
-            MainActivity.getInstance().displayErrorOnWatch("Unable To Connect");
+            setTextOnUIThread(mStatusText, "Unable To Connect\nor\nTV is OFF", Color.RED);
+            mStatusText.setVisibility(View.VISIBLE);
+            MainActivity.getInstance().displayErrorOnWatch("Unable To Connect\nor\nTV is OFF");
         }
     }
 
@@ -171,13 +176,6 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         Log.e("ERROR: ", t.getMessage());
         // storing flag to check in loop in MainActivity for TV connection. This will keep phone app to always be connected to TV.
         setTVConnectionStatus(false);
-    }
-
-    private void showToast(String message) {
-        new Handler(Looper.getMainLooper()).post(
-                () -> {
-                    Toast.makeText(mCallingContext, message, Toast.LENGTH_SHORT).show();
-                });
     }
 
     private void setTextOnUIThread(TextView view, String message, int bgColor) {
