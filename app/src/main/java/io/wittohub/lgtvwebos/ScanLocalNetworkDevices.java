@@ -28,25 +28,25 @@ public class ScanLocalNetworkDevices {
 
     private Context mCallingContext;
     private Activity mCallingActivity;
-    private TextView mTextMsgTVConn;
     SharedPreferences mSharedPref;
 
     public ScanLocalNetworkDevices(Context context, Activity activity){
         this.mCallingContext = context;
         this.mCallingActivity = activity;
-        mTextMsgTVConn = (TextView) mCallingActivity.findViewById(R.id.statusText);
         mSharedPref = mCallingActivity.getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
     }
 
     public void startPingService(Context context)
     {
         executor.execute(() -> {
-            List<LocalDeviceInfo> deviceInfoList  = new ArrayList<LocalDeviceInfo>();
+            List<LocalDeviceInfo> deviceInfoList  = new ArrayList<>();
             try {
                 WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo mWifiInfo = mWifiManager.getConnectionInfo();
                 String subnet = getSubnetAddress(mWifiManager.getDhcpInfo().gateway);
-
+                String ip2 = "192.168.0.219";
+                String tmp = InetAddress.getByAddress(new byte[] {(byte) 192, (byte) 168, 0, (byte) 219}).getHostName();
+                System.out.println(tmp);
                 for (int i=1; i<255; i++){
                     String ip = subnet + "." + i;
                     String hostname = InetAddress.getByName(ip).getHostName();
@@ -69,13 +69,13 @@ public class ScanLocalNetworkDevices {
                     }
                 }
                 if(mIsTVFound){
-                    setTextOnUIThread(mTextMsgTVConn, "TV Found: " + mTVDetails.getHostname(), Color.GREEN);
+                    MainActivity.getInstance().displayStatus("TV Found: " + mTVDetails.getHostname(), Color.GREEN);
                     SharedPreferences.Editor editor = mSharedPref.edit();
                     editor.putString("TV_IP", mTVDetails.getIp());
                     editor.apply();
                 }
                 else{
-                    setTextOnUIThread(mTextMsgTVConn, "No TV Found\n Please configure manually", Color.RED);
+                    MainActivity.getInstance().displayStatus("No TV Found\n Please configure manually", Color.RED);
                 }
             }
             catch(Exception e){
@@ -97,14 +97,6 @@ public class ScanLocalNetworkDevices {
                 (address >> 16 & 0xff));
 
         return ipString;
-    }
-
-    private void setTextOnUIThread(View view, String message, int bgColor){
-        new Handler(Looper.getMainLooper()).post(
-                () -> {
-                    mTextMsgTVConn.setText(message);
-                    mTextMsgTVConn.setTextColor(bgColor);
-                });
     }
 }
 

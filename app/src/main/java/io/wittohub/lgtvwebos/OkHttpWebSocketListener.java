@@ -32,7 +32,6 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
     private static OkHttpClient mSpecialWebSocketClient = new OkHttpClient();
     private Context mCallingContext;
     private Activity mCallingActivity;
-    private TextView mStatusText;
     private String mCK;
     private SharedPreferences mSharedPref;
     private int cidCount = 0;
@@ -44,8 +43,6 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         this.mCallingContext = context;
         this.mCallingActivity = activity;
         mSharedPref = mCallingActivity.getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
-
-        mStatusText = mCallingActivity.findViewById(R.id.statusText);
     }
 
     @Override
@@ -59,8 +56,7 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         }
         else {
             mWebSocket = webSocket;
-            setTextOnUIThread(mStatusText, "Connecting..", Color.GRAY);
-            mStatusText.setVisibility(View.VISIBLE);
+            MainActivity.getInstance().displayStatus("Connecting..", Color.YELLOW);
             mCK = mSharedPref.getString("TV_CK_CODE", null);
             String handshake_payload = null;
             // if no CK exists then make fresh handshake
@@ -108,8 +104,7 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
                 sendCmdToTV("BTN", "GET_APPS");        // fetches app list and sets in a sharedPref to be returned to watch on its load
                 sendCmdToTV("BTN", "GET_SOURCES");        // fetches sources and sets in a sharedPref to be returned to watch on its load
             } else if (jsonObj.get("type").getAsString().equals("error")) {
-                setTextOnUIThread(mStatusText, "Please accept as YES on TV to continue", Color.YELLOW);
-                mStatusText.setVisibility(View.VISIBLE);
+                MainActivity.getInstance().displayStatus("Please accept as YES on TV to continue", Color.YELLOW);
             }
         }
         // receiving all apps and sending it to watch. This is called and set in advance so that when watch requests it..its ready to be returned
@@ -151,12 +146,9 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         editor.putBoolean("IS_TV_CONNECTED", status);
         editor.apply();
         if (status) {
-            setTextOnUIThread(mStatusText, "Connected", Color.GREEN);
-            mStatusText.setVisibility(View.GONE);
+            MainActivity.getInstance().displayStatus("Connected", Color.GREEN);
         } else {
-            setTextOnUIThread(mStatusText, "Unable To Connect\nor\nTV is OFF", Color.RED);
-            mStatusText.setVisibility(View.VISIBLE);
-            MainActivity.getInstance().displayErrorOnWatch("Unable To Connect\nor\nTV is OFF");
+            MainActivity.getInstance().displayStatus("Unable To Connect\nor\nTV is OFF", Color.RED);
         }
     }
 
@@ -176,14 +168,6 @@ public class OkHttpWebSocketListener extends okhttp3.WebSocketListener {
         Log.e("ERROR: ", t.getMessage());
         // storing flag to check in loop in MainActivity for TV connection. This will keep phone app to always be connected to TV.
         setTVConnectionStatus(false);
-    }
-
-    private void setTextOnUIThread(TextView view, String message, int bgColor) {
-        new Handler(Looper.getMainLooper()).post(
-                () -> {
-                    view.setText(message);
-                    view.setTextColor(bgColor);
-                });
     }
 
     private String getCid() {

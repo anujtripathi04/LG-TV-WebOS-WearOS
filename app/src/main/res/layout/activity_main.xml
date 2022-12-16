@@ -19,13 +19,6 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <TextView
-                android:id="@+id/statusText"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:text="@string/blank" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -489,7 +482,7 @@
     </ScrollView>
 
     <ScrollView
-        android:id="@+id/viewErrorScreen"
+        android:id="@+id/viewStatusScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name"

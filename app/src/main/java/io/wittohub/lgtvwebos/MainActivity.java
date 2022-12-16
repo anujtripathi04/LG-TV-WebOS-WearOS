@@ -45,20 +45,15 @@ import okhttp3.Request;
 public class MainActivity extends Activity {
 
     private static MainActivity instance;
-    private TextView mStatusText;
     private ActivityMainBinding binding;
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;        // imp to be class member or else goes to gc and doesn't work
     private static OkHttpWebSocketListener mOkHttpWebSocketListener;
     private OkHttpClient mWebSocketClient;
-    private String mTV_IP = "192.168.0.219";
-
-    public static final String MESSAGE_PATH = "/message_transport";
-    private static final String MSG_CAPABILITY_NAME = "message_transport";      // user defined name
-    public String mStatusMsgFromPhone = null;
-    private final String mAndroidPhoneNodeWithApp = null;
+    //private String mTV_IP = "192.168.0.219";
+    private String mTV_IP;
     private ScrollView mViewLoadingScreen;
     private ScrollView mViewMainScreen;
-    private ScrollView mViewErrorScreen;
+    private ScrollView mViewStatusScreen;
     private TextView mTextViewErrorMsg;
     private ImageButton mBtn_refresh;
     private JsonArray mAppList;
@@ -85,7 +80,7 @@ public class MainActivity extends Activity {
 
         mViewLoadingScreen = findViewById(R.id.viewLoadingScreen);
         mViewMainScreen = findViewById(R.id.viewMainScreen);
-        mViewErrorScreen = findViewById(R.id.viewErrorScreen);
+        mViewStatusScreen = findViewById(R.id.viewStatusScreen);
         mTextViewErrorMsg = findViewById(R.id.textViewErrorMsg);
         mBtn_refresh = findViewById(R.id.btn_refresh);
 
@@ -95,12 +90,10 @@ public class MainActivity extends Activity {
         editor.putString("TV_CMD", null);       // Note: always init to null or else last btn is executed on first special socket connection
         editor.apply();
 
-        mStatusText = binding.statusText;
-
         mWebSocketClient = new OkHttpClient();
         mOkHttpWebSocketListener = new OkHttpWebSocketListener(getApplicationContext(), this);
 
-        //mTV_IP = sharedPref.getString("TV_IP", null); // TODO: remove this when Auto Discovery works
+        mTV_IP = sharedPref.getString("TV_IP", null); // TODO: remove this when Auto Discovery works
 
         /*
             This listener will be called once TV IP is set after auto discovery
@@ -119,8 +112,7 @@ public class MainActivity extends Activity {
             If TV IP is not available then start auto discovery
          */
         if (mTV_IP == null) {
-            mStatusText.setText("Searching for TV..");
-            mStatusText.setVisibility(View.VISIBLE);
+            displayStatus("Searching for TV..", Color.YELLOW);
             ScanLocalNetworkDevices scanLocalDevices = new ScanLocalNetworkDevices(getApplicationContext(), this);
             scanLocalDevices.startPingService(getApplicationContext());
         }
@@ -172,7 +164,7 @@ public class MainActivity extends Activity {
                 break;
             case R.id.btn_power_off:
                 data.addProperty("value", "TURN_OFF");
-                displayErrorOnWatch("TV is OFF");
+                displayStatus("TV is OFF", Color.RED);
                 mBtn_refresh.setVisibility(View.GONE);
                 break;
             case R.id.btn_ch_up:
@@ -236,14 +228,6 @@ public class MainActivity extends Activity {
         sendDataToTV(data);
     }
 
-    private void setTextOnUIThread(TextView view, String message, int bgColor) {
-        new Handler(Looper.getMainLooper()).post(
-                () -> {
-                    view.setText(message);
-                    view.setTextColor(bgColor);
-                });
-    }
-
     public void sendDataToTV(JsonObject data) {
         try {
             String cmdType = data.get("cmdType").getAsString();
@@ -272,8 +256,7 @@ public class MainActivity extends Activity {
                 }
             }
             else if (value.equals("TURN_OFF")) {
-                setTextOnUIThread(mStatusText, "TV is OFF", Color.RED);
-                mStatusText.setVisibility(View.VISIBLE);
+                displayStatus("TV is OFF", Color.RED);
             }
             mOkHttpWebSocketListener = new OkHttpWebSocketListener(getApplicationContext(), this);
             mOkHttpWebSocketListener.sendCmdToTV(cmdType, value);
@@ -325,20 +308,20 @@ public class MainActivity extends Activity {
         }
     }
 
-    void displayErrorOnWatch(String message) {
+    void displayStatus(String message, int color) {
         try{
             runOnUiThread(() -> {
                 mViewLoadingScreen.setVisibility(View.GONE);
                 mViewMainScreen.setVisibility(View.GONE);
                 mTextViewErrorMsg.setText(message);
-                mViewErrorScreen.setBackgroundColor(Color.RED);
-                mViewErrorScreen.setVisibility(View.VISIBLE);
+                mTextViewErrorMsg.setTextColor(color);
+                mViewStatusScreen.setBackgroundColor(Color.BLACK);
+                mViewStatusScreen.setVisibility(View.VISIBLE);
             });
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
-
     }
 
     void setAppList(JsonArray appList) throws IOException {
