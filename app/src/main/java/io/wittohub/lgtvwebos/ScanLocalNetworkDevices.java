@@ -42,23 +42,12 @@ public class ScanLocalNetworkDevices {
             List<LocalDeviceInfo> deviceInfoList  = new ArrayList<>();
             try {
                 WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                WifiInfo mWifiInfo = mWifiManager.getConnectionInfo();
                 String subnet = getSubnetAddress(mWifiManager.getDhcpInfo().gateway);
-                String ip2 = "192.168.0.219";
-                String tmp = InetAddress.getByAddress(new byte[] {(byte) 192, (byte) 168, 0, (byte) 219}).getHostName();
-                System.out.println(tmp);
                 for (int i=1; i<255; i++){
                     String ip = subnet + "." + i;
                     String hostname = InetAddress.getByName(ip).getHostName();
-                    //if (InetAddress.getByName(host).isReachable(1)){
-                    if (true){
-                        LocalDeviceInfo localDeviceInfo = new LocalDeviceInfo(ip, hostname);
-                        deviceInfoList.add(localDeviceInfo);
-                    }
-                    else
-                    {
-                        Log.e("ERROR: ", "Not Reachable IP: " + String.valueOf(ip));
-                    }
+                    LocalDeviceInfo localDeviceInfo = new LocalDeviceInfo(ip, hostname);
+                    deviceInfoList.add(localDeviceInfo);
                 }
                 for (int i=0; i<deviceInfoList.size(); i++){
                     System.out.println("hostname="+deviceInfoList.get(i).getHostname().toLowerCase());

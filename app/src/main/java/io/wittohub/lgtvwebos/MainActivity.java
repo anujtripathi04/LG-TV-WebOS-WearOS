@@ -49,7 +49,6 @@ public class MainActivity extends Activity {
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;        // imp to be class member or else goes to gc and doesn't work
     private static OkHttpWebSocketListener mOkHttpWebSocketListener;
     private OkHttpClient mWebSocketClient;
-    //private String mTV_IP = "192.168.0.219";
     private String mTV_IP;
     private ScrollView mViewLoadingScreen;
     private ScrollView mViewMainScreen;
@@ -93,7 +92,7 @@ public class MainActivity extends Activity {
         mWebSocketClient = new OkHttpClient();
         mOkHttpWebSocketListener = new OkHttpWebSocketListener(getApplicationContext(), this);
 
-        mTV_IP = sharedPref.getString("TV_IP", null); // TODO: remove this when Auto Discovery works
+        mTV_IP = sharedPref.getString("TV_IP", null);
 
         /*
             This listener will be called once TV IP is set after auto discovery
@@ -137,6 +136,7 @@ public class MainActivity extends Activity {
     }
 
     void connectToTV() {
+        showLoadingIndicator();
         Request request = new Request.Builder().url("ws://" + mTV_IP + ":3000").build();
         mWebSocketClient.newWebSocket(request, mOkHttpWebSocketListener);
     }
@@ -294,6 +294,7 @@ public class MainActivity extends Activity {
     }
 
     public void checkStatus(View view) {
+        showLoadingIndicator();
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
         if (Build.VERSION.SDK_INT >= 11) {
             recreate();
@@ -308,15 +309,30 @@ public class MainActivity extends Activity {
         }
     }
 
+    void showLoadingIndicator(){
+        runOnUiThread(() -> {
+            mViewMainScreen.setVisibility(View.GONE);
+            mViewStatusScreen.setVisibility(View.GONE);
+            mViewLoadingScreen.setVisibility(View.VISIBLE);
+        });
+    }
     void displayStatus(String message, int color) {
         try{
             runOnUiThread(() -> {
                 mViewLoadingScreen.setVisibility(View.GONE);
-                mViewMainScreen.setVisibility(View.GONE);
                 mTextViewErrorMsg.setText(message);
                 mTextViewErrorMsg.setTextColor(color);
                 mViewStatusScreen.setBackgroundColor(Color.BLACK);
                 mViewStatusScreen.setVisibility(View.VISIBLE);
+                if(message.equals("Connected")){
+                    mViewStatusScreen.setVisibility(View.GONE);
+                    mBtn_refresh.setVisibility(View.GONE);
+                    mViewMainScreen.setVisibility(View.VISIBLE);
+                }
+                else{
+                    mViewMainScreen.setVisibility(View.GONE);
+                    mBtn_refresh.setVisibility(View.VISIBLE);
+                }
             });
         }
         catch (Exception e){
