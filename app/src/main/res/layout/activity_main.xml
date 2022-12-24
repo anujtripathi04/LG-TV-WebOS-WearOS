@@ -121,7 +121,7 @@
                             android:layout_height="wrap_content"
                             android:backgroundTint="@android:color/transparent"
                             android:contentDescription="@string/app_name"
-                            android:onClick="btnPressed"
+                            android:onClick="showBuyPro"
                             android:src="@drawable/ic_settings" />
                     </TableRow>
                 </TableLayout>
@@ -192,7 +192,7 @@
                     android:adjustViewBounds="true"
                     android:backgroundTint="@android:color/transparent"
                     android:contentDescription="@string/app_name"
-                    android:onClick="btnPressed"
+                    android:onClick="showBuyPro"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_mute" />
 
@@ -214,7 +214,7 @@
                     android:adjustViewBounds="true"
                     android:backgroundTint="@android:color/transparent"
                     android:contentDescription="@string/app_name"
-                    android:onClick="btnPressed"
+                    android:onClick="showBuyPro"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_source" />
             </LinearLayout>

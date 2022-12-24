@@ -1,14 +1,17 @@
 package io.wittohub.lgtvwebos;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,12 +61,7 @@ public class MainActivity extends Activity {
     private JsonArray mAppList;
     private final View.OnClickListener ClickListener = v -> {
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
-        int index = (Integer) v.getTag();
-        String appID = mAppList.get(index).getAsJsonObject().get("id").getAsString();
-        JsonObject data = new JsonObject();
-        data.addProperty("cmdType", "APP");
-        data.addProperty("value", appID);
-        sendDataToTV(data);
+        showBuyPro(null);
     };
 
     public static MainActivity getInstance() {
@@ -228,6 +226,40 @@ public class MainActivity extends Activity {
         sendDataToTV(data);
     }
 
+    public void showBuyPro(View v){
+        try {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            redirectToPlaystore();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Feature available only in Pro version").setPositiveButton("Buy", dialogClickListener)
+                    .setNegativeButton("Cancel", dialogClickListener).show();
+        } catch (Exception e) {
+            Log.e("EXCEPTION: ", e.getMessage());
+        }
+    }
+    public void redirectToPlaystore(){
+        String appPackageName = "io.wittohub.lgtvwebos";
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
+    }
+
     public void sendDataToTV(JsonObject data) {
         try {
             String cmdType = data.get("cmdType").getAsString();
@@ -278,7 +310,6 @@ public class MainActivity extends Activity {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < sources.size(); i++) {
             list.add(sources.get(i).getAsJsonObject().get("label").getAsString());
-
         }
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.textcenter, list);
