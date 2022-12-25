@@ -41,7 +41,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.wittohub.lgtvwebos.databinding.ActivityMainBinding;
+import io.wittohub.lgtvwebos.free.R;
+import io.wittohub.lgtvwebos.free.databinding.ActivityMainBinding;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

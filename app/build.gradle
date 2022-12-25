@@ -6,7 +6,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "io.wittohub.lgtvwebos"
+        applicationId "io.wittohub.lgtvwebos.free"
         minSdk 30
         targetSdk 32
         versionCode 2
